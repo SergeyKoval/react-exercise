@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.input-group {
+  min-width: 350px;
+}
+
+.description {
+  font-size: 12px;
+}
