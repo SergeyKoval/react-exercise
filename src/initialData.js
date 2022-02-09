@@ -1,3 +1,9 @@
+export const emptyTodoItem = {
+  title: '',
+  description: '',
+  done: false
+}
+
 export const initialTodoItems = [
   {
     id: "id1",

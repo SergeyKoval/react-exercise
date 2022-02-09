@@ -1,10 +1,13 @@
 import TodoList from "./TodoList";
 import todoReducer from "./todoReducer";
-import {initialTodoItems} from "../initialData";
-import {useImmerReducer} from "use-immer";
+import {emptyTodoItem, initialTodoItems} from "../initialData";
+import {useImmer, useImmerReducer} from "use-immer";
+import TodoEditForm from "./TodoEditForm";
+import { v4 as uuidv4 } from 'uuid';
 
 function Todo() {
   const [todoItems, dispatch] = useImmerReducer(todoReducer, initialTodoItems);
+  const [todoItem, updateTodoItem] = useImmer({...emptyTodoItem});
 
   function handleTodoItemChange(todoItem) {
     dispatch({
@@ -20,6 +23,21 @@ function Todo() {
     });
   }
 
+  function handleTodoItemEdit(todoItem) {
+    updateTodoItem(todoItem);
+  }
+
+  function handleTodoItemAdd(todoItem) {
+    dispatch({
+      type: 'added',
+      todoItem: {
+        ...todoItem,
+        id: uuidv4()
+      }
+    });
+    updateTodoItem(emptyTodoItem);
+  }
+
   return (
       <div className="container">
         <div className="row pb-3">
@@ -31,32 +49,14 @@ function Todo() {
           <div className="col">
             <TodoList todoItems={todoItems}
                       onChangeTodoItem={handleTodoItemChange}
-                      onDeleteTodoItem={handleTodoItemDelete}/>
+                      onDeleteTodoItem={handleTodoItemDelete}
+                      onEditTodoItem={handleTodoItemEdit}/>
           </div>
           <div className="col">
-            <div className="row mb-3">
-              <div className="coll">
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text" id="title">Title</span>
-                  </div>
-                  <input type="text" className="form-control" aria-describedby="title"/>
-                </div>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="coll">
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text">Description</span>
-                  </div>
-                  <textarea className="form-control" defaultValue={""}/>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <button type="button" className="btn btn-primary">Primary</button>
-            </div>
+            <TodoEditForm todoItem={todoItem}
+                          onAddTodoItem={handleTodoItemAdd}
+                          updateTodoItem={updateTodoItem}
+                          onChangeTodoItem={handleTodoItemChange}/>
           </div>
         </div>
       </div>
